@@ -1,4 +1,4 @@
-package com.example.trailtracker
+package com.benforino.trailtracker
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
@@ -9,7 +9,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
-import com.example.trailtracker.databinding.ActivityMainBinding
+import com.benforino.trailtracker.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 

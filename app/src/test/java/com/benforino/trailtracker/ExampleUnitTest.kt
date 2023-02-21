@@ -1,4 +1,4 @@
-package com.example.trailtracker
+package com.benforino.trailtracker
 
 import org.junit.Test
 
