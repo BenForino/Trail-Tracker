@@ -4,7 +4,8 @@
     tools:context="com.benforino.trailtracker.MainActivity">
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:title="@string/action_settings"/>
+    <item
+        android:id="@+id/action_account"
+        android:title="@string/account" />
 </menu>
