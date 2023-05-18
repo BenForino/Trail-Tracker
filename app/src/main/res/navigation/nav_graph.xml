@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/FirstFragment">
-
+    <action android:id="@+id/global_record_fragment"
+        app:destination="@+id/recordFragment"
+        app:launchSingleTop="true"/>
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.benforino.trailtracker.FirstFragment"

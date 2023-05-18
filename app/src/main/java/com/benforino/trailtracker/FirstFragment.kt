@@ -14,9 +14,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.app
 
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
 class FirstFragment : Fragment() {
     private lateinit var firebaseAuth:FirebaseAuth
     private var _binding: FragmentFirstBinding? = null

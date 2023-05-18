@@ -7,14 +7,14 @@
     tools:context=".RecordFragment">
 
 
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/startRecording"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="80dp"
         android:clickable="true"
         android:src="@android:drawable/ic_menu_mylocation"
+        app:backgroundTint="@color/teal_200"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -26,4 +26,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/stopRecording"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#DA314A"
+        android:text="@string/stop"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/startRecording"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/startRecording"
+        app:layout_constraintTop_toTopOf="@+id/startRecording" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

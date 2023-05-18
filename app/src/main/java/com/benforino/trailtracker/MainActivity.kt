@@ -1,5 +1,6 @@
 package com.benforino.trailtracker
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
@@ -8,11 +9,14 @@ import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.benforino.trailtracker.databinding.ActivityMainBinding
+import com.benforino.trailtracker.misc.Constants.SHOW_RECORDING_FRAGMENT
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
@@ -21,11 +25,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import androidx.navigation.fragment.findNavController
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var navController: NavController
     private var fusedLocationProvider: FusedLocationProviderClient? = null
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract()
@@ -35,11 +41,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         firebaseAuth = Firebase.auth;
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(navController.graph)
 
         binding.fab.setOnClickListener { view ->
@@ -52,7 +59,13 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, firebaseAuth.currentUser!!.displayName, Toast.LENGTH_SHORT).show()
         }
         checkLocationPermission()
+        launchRecordFragment(intent)
 
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        launchRecordFragment(intent)
     }
 
     private fun checkLocationPermission() {
@@ -126,8 +139,11 @@ class MainActivity : AppCompatActivity() {
             }
         // [END auth_fui_signout]
     }
-    fun onAuthStateChanged(auth: FirebaseAuth): Unit {
 
+    private fun launchRecordFragment(intent: Intent?){
+        if(intent?.action == SHOW_RECORDING_FRAGMENT) {
+            navController.navigate(R.id.global_record_fragment)
+        }
     }
 
 
