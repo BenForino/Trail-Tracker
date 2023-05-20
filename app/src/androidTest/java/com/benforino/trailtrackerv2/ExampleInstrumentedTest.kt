@@ -1,4 +1,4 @@
-package com.benforino.trailtracker
+package com.benforino.trailtrackerv2
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

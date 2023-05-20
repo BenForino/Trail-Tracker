@@ -9,7 +9,7 @@
         app:launchSingleTop="true"/>
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.benforino.trailtracker.FirstFragment"
+        android:name="com.benforino.trailtrackerv2.FirstFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
 
@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.benforino.trailtracker.SecondFragment"
+        android:name="com.benforino.trailtrackerv2.SecondFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second">
 
@@ -38,7 +38,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.benforino.trailtracker.SettingsFragment"
+        android:name="com.benforino.trailtrackerv2.SettingsFragment"
         android:label="SettingsFragment" >
         <action
             android:id="@+id/action_settingsFragment_to_FirstFragment"
@@ -49,7 +49,7 @@
     </fragment>
     <fragment
         android:id="@+id/recordFragment"
-        android:name="com.benforino.trailtracker.RecordFragment"
+        android:name="com.benforino.trailtrackerv2.RecordFragment"
         android:label="fragment_record"
         tools:layout="@layout/fragment_record" />
 </navigation>

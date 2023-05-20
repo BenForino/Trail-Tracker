@@ -1,4 +1,4 @@
-package com.benforino.trailtracker.misc
+package com.benforino.trailtrackerv2.misc
 
 object Constants {
     const val ACTION_START_OR_RESUME_SERVICE = "ACTION_START_OR_RESUME_SERVICE"

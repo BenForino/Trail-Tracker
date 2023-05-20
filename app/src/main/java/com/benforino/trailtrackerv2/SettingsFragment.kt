@@ -1,5 +1,4 @@
-package com.benforino.trailtracker
-import android.content.SharedPreferences
+package com.benforino.trailtrackerv2
 import android.os.Bundle
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController

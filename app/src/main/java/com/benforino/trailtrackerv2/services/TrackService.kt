@@ -1,4 +1,4 @@
-package com.benforino.trailtracker.services
+package com.benforino.trailtrackerv2.services
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -17,17 +17,17 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.benforino.trailtracker.MainActivity
-import com.benforino.trailtracker.R
-import com.benforino.trailtracker.misc.Constants.ACTION_PAUSE_SERVICE
-import com.benforino.trailtracker.misc.Constants.ACTION_START_OR_RESUME_SERVICE
-import com.benforino.trailtracker.misc.Constants.ACTION_STOP_SERVICE
-import com.benforino.trailtracker.misc.Constants.NOTIFICATION_CHANNEL_ID
-import com.benforino.trailtracker.misc.Constants.NOTIFICATION_CHANNEL_NAME
-import com.benforino.trailtracker.misc.Constants.NOTIFICATION_ID
-import com.benforino.trailtracker.misc.Constants.SHOW_RECORDING_FRAGMENT
-import com.benforino.trailtracker.misc.Constants.locationFastestInterval
-import com.benforino.trailtracker.misc.Constants.locationUpdateInterval
+import com.benforino.trailtrackerv2.MainActivity
+import com.benforino.trailtrackerv2.R
+import com.benforino.trailtrackerv2.misc.Constants.ACTION_PAUSE_SERVICE
+import com.benforino.trailtrackerv2.misc.Constants.ACTION_START_OR_RESUME_SERVICE
+import com.benforino.trailtrackerv2.misc.Constants.ACTION_STOP_SERVICE
+import com.benforino.trailtrackerv2.misc.Constants.NOTIFICATION_CHANNEL_ID
+import com.benforino.trailtrackerv2.misc.Constants.NOTIFICATION_CHANNEL_NAME
+import com.benforino.trailtrackerv2.misc.Constants.NOTIFICATION_ID
+import com.benforino.trailtrackerv2.misc.Constants.SHOW_RECORDING_FRAGMENT
+import com.benforino.trailtrackerv2.misc.Constants.locationFastestInterval
+import com.benforino.trailtrackerv2.misc.Constants.locationUpdateInterval
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -35,15 +35,22 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 typealias Polyline = MutableList<LatLng>
 typealias Polylines = MutableList<Polyline>
-
 class TrackService: LifecycleService() {
-
-    private var firstFun = true
+    private var firstRun = true
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-
+    private val duration = MutableLiveData<Long>()
+    private var startTime = 0L
+    private var timer = false
+    private var sectionTime = 0L
+    private var totalTime = 0L
+    var seviceState = false
     override fun onCreate() {
         super.onCreate()
         postInitVals()
@@ -56,10 +63,39 @@ class TrackService: LifecycleService() {
     }
 
     companion object {
+        val durationMs = MutableLiveData<Long>()
         val tracking = MutableLiveData<Boolean>()
         val waypoints = MutableLiveData<Polylines>()
     }
 
+    private fun timeRide(){
+        polyLineInit()
+        tracking.postValue(true)
+        startTime = System.currentTimeMillis()
+        timer = true
+        CoroutineScope(Dispatchers.Main).launch {
+            while (tracking.value!!){
+                sectionTime = System.currentTimeMillis() - startTime
+
+                duration.postValue(startTime + totalTime)
+                delay(45L)
+            }
+            totalTime += sectionTime
+        }
+
+    }
+    private fun killService() {
+        seviceState = true
+        firstRun = true
+        pauseService()
+        postInitVals()
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        stopSelf()
+    }
+    private fun pauseService() {
+        tracking.postValue(false)
+        timer = false
+    }
     private fun postInitVals(){
         tracking.postValue(false)
         waypoints.postValue(mutableListOf())
@@ -124,11 +160,11 @@ class TrackService: LifecycleService() {
         intent?.let {
             when(it.action){
                 ACTION_START_OR_RESUME_SERVICE -> {
-                    if(firstFun){
+                    if(firstRun){
                         createForegroundService()
-                        firstFun = false
+                        firstRun = false
                     }else{
-                        createForegroundService()
+                        timeRide()
                         Log.d("trackservice","Resumed Service")
                     }
                 }
@@ -136,7 +172,9 @@ class TrackService: LifecycleService() {
                     pause()
                 }
                 ACTION_STOP_SERVICE -> {
+                    killService()
                     Log.d("trackservice","Stopped Service")
+
                 }
 
                 else -> {
@@ -149,6 +187,7 @@ class TrackService: LifecycleService() {
 
     private fun pause(){
         tracking.postValue(false)
+        timer = false
     }
 
     private fun getPendingIntent() = PendingIntent.getActivity(
@@ -160,7 +199,7 @@ class TrackService: LifecycleService() {
         FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
     )
     private fun createForegroundService() {
-        polyLineInit()
+        timeRide()
         tracking.postValue(true)
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE)
                 as NotificationManager
@@ -170,7 +209,7 @@ class TrackService: LifecycleService() {
             .setOngoing(true)
             .setSmallIcon(R.drawable.radio_button_checked)
             .setContentTitle("Trail Tracker")
-            .setContentText("00:00:00")
+            .setContentText("Ride in progress")
             .setContentIntent(getPendingIntent())
         startForeground(NOTIFICATION_ID, notificationBuilder.build())
     }

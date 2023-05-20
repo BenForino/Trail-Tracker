@@ -1,4 +1,4 @@
-package com.benforino.trailtracker
+package com.benforino.trailtrackerv2
 
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -6,17 +6,14 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import com.benforino.trailtracker.databinding.ActivityMainBinding
-import com.benforino.trailtracker.misc.Constants.SHOW_RECORDING_FRAGMENT
+import com.benforino.trailtrackerv2.databinding.ActivityMainBinding
+import com.benforino.trailtrackerv2.misc.Constants.SHOW_RECORDING_FRAGMENT
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
@@ -25,7 +22,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import androidx.navigation.fragment.findNavController
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
