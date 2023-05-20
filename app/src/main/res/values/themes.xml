@@ -22,4 +22,9 @@
     <style name="Theme.TrailTracker.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.TrailTracker.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="RoundCorner" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
+        <item name="color">@color/white</item>
+    </style>
 </resources>

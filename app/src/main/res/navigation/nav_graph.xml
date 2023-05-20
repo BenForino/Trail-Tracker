@@ -3,38 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/MenuFragment">
     <action android:id="@+id/global_record_fragment"
         app:destination="@+id/recordFragment"
         app:launchSingleTop="true"/>
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.benforino.trailtrackerv2.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        android:id="@+id/MenuFragment"
+        android:name="com.benforino.trailtrackerv2.MenuFragment"
+        android:label="@string/menu_fragment_label"
+        tools:layout="@layout/fragment_menu">
 
-        <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
         <action
             android:id="@+id/action_FirstFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
         <action
             android:id="@+id/action_FirstFragment_to_recordFragment"
             app:destination="@id/recordFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.benforino.trailtrackerv2.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
-
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-        <action
-            android:id="@+id/action_SecondFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
+            android:id="@+id/action_MenuFragment_to_trailViewFragment"
+            app:destination="@id/trailViewFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -42,14 +29,16 @@
         android:label="SettingsFragment" >
         <action
             android:id="@+id/action_settingsFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-        <action
-            android:id="@+id/action_settingsFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            app:destination="@id/MenuFragment" />
     </fragment>
     <fragment
         android:id="@+id/recordFragment"
         android:name="com.benforino.trailtrackerv2.RecordFragment"
         android:label="fragment_record"
         tools:layout="@layout/fragment_record" />
+    <fragment
+        android:id="@+id/trailViewFragment"
+        android:name="com.benforino.trailtrackerv2.TrailViewFragment"
+        android:label="fragment_trail_view"
+        tools:layout="@layout/fragment_trail_view" />
 </navigation>

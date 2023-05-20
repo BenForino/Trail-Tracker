@@ -2,7 +2,7 @@
     <string name="app_name">Trail Tracker</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
+    <string name="menu_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
@@ -28,4 +28,7 @@
     <string name="logout_summary">Logout from Trail-Tracker</string>
     <string name="logout_text">Logout</string>
     <string name="stop">Stop</string>
+    <string name="welcome_message">Welcome to Trail-Tracker, please select an option</string>
+    <string name="record_a_trail">Record a Trail</string>
+    <string name="view_trails_near_me">View Trails Near Me</string>
 </resources>

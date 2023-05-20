@@ -19,7 +19,6 @@ import com.benforino.trailtrackerv2.misc.Constants.ACTION_START_OR_RESUME_SERVIC
 import com.benforino.trailtrackerv2.misc.Constants.ACTION_STOP_SERVICE
 import com.benforino.trailtrackerv2.services.Polyline
 import com.benforino.trailtrackerv2.services.TrackService
-import com.benforino.trailtrackerv2.viewmodel.ViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -28,16 +27,21 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.pixelcarrot.base64image.Base64Image
+import java.util.Base64
 import java.util.Calendar
+import java.util.UUID
 
 class RecordFragment : Fragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
-    private val viewModel: ViewModel by viewModels()
+    private lateinit var firebaseAuth: FirebaseAuth
     private var _binding: FragmentRecordBinding? = null
     private var map: GoogleMap? = null
     val fireStoreDatabase = FirebaseFirestore.getInstance()
@@ -49,7 +53,7 @@ class RecordFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        firebaseAuth = Firebase.auth;
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.requireContext())
         _binding = FragmentRecordBinding.inflate(inflater, container, false)
         return binding.root
@@ -112,29 +116,49 @@ class RecordFragment : Fragment() {
     private fun finishRide(){
         map?.snapshot { bmp ->
             var distance = 0f
+            val finalLat = waypoints.last().last().latitude
+            val finalLon = waypoints.last().last().longitude
             for(waypoint in waypoints){
                 distance += calcRideDistance(waypoint)
             }
+
             val timeStamp = Calendar.getInstance().timeInMillis
-           saveToFirestore(distance, timeStamp,bmp,waypoints)
+           saveToFirestore(distance, timeStamp,bmp,waypoints,finalLat,finalLon)
            // viewModel.insertTrail(trail)
+            sendServiceCommand(ACTION_STOP_SERVICE)
         }
-        sendServiceCommand(ACTION_STOP_SERVICE)
+
     }
 
-    private fun saveToFirestore(distance:Float, timeStamp:Long, img:Bitmap? = null, wayPoint:MutableList<Polyline>){
-        val trailMap = hashMapOf(
-            "distance" to distance,
-            "timeStamp" to timeStamp,
-        )
-        db.collection("Trails").document("Trail").set(trailMap)
+    private fun saveToFirestore(distance:Float, timeStamp:Long, img:Bitmap? = null, wayPoint:MutableList<Polyline>, finalLat:Double,finalLon:Double){
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.let {
+            Base64Image.encode(img) { base64 ->
+                base64?.let {
+                    val randomID = UUID.randomUUID().toString()
+                    val trailMap = hashMapOf(
+                        "distance" to distance,
+                        "timeStamp" to timeStamp,
+                        "userID" to user.uid,
+                        "finalLat" to finalLat,
+                        "finalLon" to finalLon
+                    )
+                    val imgMap = hashMapOf(
+                        "img" to it,
+                        "id" to randomID
+                    )
+
+        db.collection("Trails").document(randomID).set(trailMap)
             .addOnSuccessListener {
                 Log.d("firebase","Saved to firestore")
+                db.collection("Trail_Images").document(randomID).set(imgMap)
             }
             .addOnFailureListener {
                 Log.d("firebase", "Failed to save to firestore")
             }
-
+                }
+            }
+        }
     }
 
     private fun calcRideDistance(polyline: Polyline):Float{

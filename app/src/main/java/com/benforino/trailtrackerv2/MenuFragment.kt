@@ -6,14 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.benforino.trailtrackerv2.databinding.FragmentFirstBinding
+import com.benforino.trailtrackerv2.databinding.FragmentMenuBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class FirstFragment : Fragment() {
+class MenuFragment : Fragment() {
     private lateinit var firebaseAuth:FirebaseAuth
-    private var _binding: FragmentFirstBinding? = null
+    private var _binding: FragmentMenuBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -25,7 +25,7 @@ class FirstFragment : Fragment() {
         ): View? {
         firebaseAuth = Firebase.auth;
 
-        _binding = FragmentFirstBinding.inflate(inflater, container, false)
+        _binding = FragmentMenuBinding.inflate(inflater, container, false)
         return binding.root
 
     }
@@ -35,6 +35,9 @@ class FirstFragment : Fragment() {
 
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_recordFragment)
+        }
+        binding.button2.setOnClickListener{
+            findNavController().navigate((R.id.action_MenuFragment_to_trailViewFragment))
         }
 
     }
