@@ -35,4 +35,5 @@
     <string name="enter_location_manually">Enter Location Manually</string>
     <string name="submit">Submit</string>
     <string name="enter_trail_name">Enter Trail Name</string>
+    <string name="enter_address">Enter Address</string>
 </resources>
