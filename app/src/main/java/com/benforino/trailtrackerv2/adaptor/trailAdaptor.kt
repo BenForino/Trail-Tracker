@@ -39,6 +39,6 @@ class trailAdaptor(private val trailsList:ArrayList<Trail>):
             }
         }
 
-        holder.tvHeading.text = currentItem.distance.toString()
+        holder.tvHeading.text = currentItem.name
     }
 }

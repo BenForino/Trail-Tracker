@@ -31,4 +31,8 @@
     <string name="welcome_message">Welcome to Trail-Tracker, please select an option</string>
     <string name="record_a_trail">Record a Trail</string>
     <string name="view_trails_near_me">View Trails Near Me</string>
+    <string name="use_current_location">Use Current Location</string>
+    <string name="enter_location_manually">Enter Location Manually</string>
+    <string name="submit">Submit</string>
+    <string name="enter_trail_name">Enter Trail Name</string>
 </resources>

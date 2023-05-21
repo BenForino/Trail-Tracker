@@ -1,5 +1,7 @@
 package com.benforino.trailtrackerv2
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -9,9 +11,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.benforino.trailtrackerv2.databinding.FragmentRecordBinding
 import com.benforino.trailtrackerv2.misc.Constants.ACTION_PAUSE_SERVICE
@@ -33,9 +35,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.pixelcarrot.base64image.Base64Image
-import java.util.Base64
 import java.util.Calendar
 import java.util.UUID
+
 
 class RecordFragment : Fragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -132,33 +134,50 @@ class RecordFragment : Fragment() {
 
     private fun saveToFirestore(distance:Float, timeStamp:Long, img:Bitmap? = null, wayPoint:MutableList<Polyline>, finalLat:Double,finalLon:Double){
         val user = FirebaseAuth.getInstance().currentUser
-        user?.let {
-            Base64Image.encode(img) { base64 ->
-                base64?.let {
-                    val randomID = UUID.randomUUID().toString()
-                    val trailMap = hashMapOf(
-                        "distance" to distance,
-                        "timeStamp" to timeStamp,
-                        "userID" to user.uid,
-                        "finalLat" to finalLat,
-                        "finalLon" to finalLon
-                    )
-                    val imgMap = hashMapOf(
-                        "img" to it,
-                        "id" to randomID
-                    )
+        val builder = AlertDialog.Builder(requireContext())
+        val inflater = layoutInflater
+        val dialogLayout = inflater.inflate(R.layout.name_trail_layout,null)
+        val editText = dialogLayout.findViewById<EditText>(R.id.trailName)
+        with(builder){
+            setTitle("Enter a name for this new trail")
+            setPositiveButton("Save"){dialog, which ->
+                var name = editText.text.toString()
+                if(name.isEmpty()){
+                    name = "unnamed_trail"
+                }
+                user?.let {
+                    Base64Image.encode(img) { base64 ->
+                        base64?.let {
+                            val randomID = UUID.randomUUID().toString()
+                            val trailMap = hashMapOf(
+                                "name" to name,
+                                "distance" to distance,
+                                "timeStamp" to timeStamp,
+                                "userID" to user.uid,
+                                "finalLat" to finalLat,
+                                "finalLon" to finalLon
+                            )
+                            val imgMap = hashMapOf(
+                                "img" to it,
+                                "id" to randomID
+                            )
 
-        db.collection("Trails").document(randomID).set(trailMap)
-            .addOnSuccessListener {
-                Log.d("firebase","Saved to firestore")
-                db.collection("Trail_Images").document(randomID).set(imgMap)
-            }
-            .addOnFailureListener {
-                Log.d("firebase", "Failed to save to firestore")
-            }
+                            db.collection("Trails").document(randomID).set(trailMap)
+                                .addOnSuccessListener {
+                                    Log.d("firebase","Saved to firestore")
+                                    db.collection("Trail_Images").document(randomID).set(imgMap)
+                                }
+                                .addOnFailureListener {
+                                    Log.d("firebase", "Failed to save to firestore")
+                                }
+                        }
+                    }
                 }
             }
+            setView(dialogLayout)
+            show()
         }
+
     }
 
     private fun calcRideDistance(polyline: Polyline):Float{

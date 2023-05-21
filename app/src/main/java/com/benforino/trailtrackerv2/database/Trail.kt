@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class Trail(
     var id:String,
     var distance: Float?,
-    var img: String?
+    var img: String?,
+    var name:String
 )
