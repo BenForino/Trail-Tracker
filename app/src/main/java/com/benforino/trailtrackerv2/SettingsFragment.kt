@@ -5,6 +5,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.firebase.ui.auth.AuthUI
+import kotlin.math.sign
 
 class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,9 +20,22 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val key = preference.key
         if(key == "logout"){
             signOut()
-            findNavController().navigate(R.id.action_settingsFragment_to_FirstFragment)
+        }
+        if(key == "delete"){
+            deleteAccount()
         }
         return super.onPreferenceTreeClick(preference)
+    }
+
+    private fun deleteAccount() {
+        this.context?.let{
+            AuthUI.getInstance()
+                .delete(it)
+                .addOnCompleteListener {
+                    signOut()
+                    Toast.makeText(this.context, "Your account has been deleted", Toast.LENGTH_SHORT).show();
+                }
+        }
     }
 
     private fun signOut() {

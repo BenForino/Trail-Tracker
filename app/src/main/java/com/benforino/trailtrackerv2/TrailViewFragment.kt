@@ -1,6 +1,7 @@
 package com.benforino.trailtrackerv2
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
@@ -90,27 +91,11 @@ class TrailViewFragment : Fragment() {
             }
     }
     private fun getTrails(position: Location){
+        val trailArray = arrayListOf<Trail>()
         val trails = db.collection("Trails")
         val latLongBounds = calculateLatLngBounds(position)
-        trails.whereLessThanOrEqualTo("finalLat", latLongBounds.second.latitude)
-            .whereGreaterThanOrEqualTo("finalLat",latLongBounds.first.latitude)
-            .get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    if ( document.get("finalLon").toString().toDouble() >= latLongBounds.first.longitude
-                        && document.get("finalLon").toString().toDouble() <= latLongBounds.second.longitude){
-                        Log.d("Testing", "DocumentSnapshot data: ${document.data}")
-                    }
-                }
-                getImages(documents)
-            }
-            .addOnFailureListener { exception ->
-                Log.w("Testing", "Error getting documents: ", exception)
-            }
-    }
-    private fun getTrails(position: LatLng){
-        val trails = db.collection("Trails")
-        val latLongBounds = calculateLatLngBounds(position)
+        trailRecycler = binding.trailRecycler
+        trailRecycler.layoutManager = LinearLayoutManager(requireContext())
         trails.whereLessThanOrEqualTo("finalLat", latLongBounds.second.latitude)
             .whereGreaterThanOrEqualTo("finalLat",latLongBounds.first.latitude)
             .get()
@@ -122,10 +107,51 @@ class TrailViewFragment : Fragment() {
                             && document.get("finalLon").toString()
                                 .toDouble() <= latLongBounds.second.longitude
                         ) {
-                            Log.d("Testing", "DocumentSnapshot data: ${document.data}")
+                            var name = "unnamed_trail"
+                            if (document.get("name") !== null) {
+                                name = document.get("name")!!.toString()
+                            }
+                            trailArray.add(Trail(document.id,
+                                document.get("distance").toString().toFloat(),
+                                name))
                         }
                     }
-                    getImages(documents)
+                    trailRecycler.adapter = trailAdaptor(trailArray)
+                }else{
+                    Toast.makeText(requireContext(), "No Trails found in this location", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Testing", "Error getting documents: ", exception)
+            }
+    }
+    private fun getTrails(position: LatLng){
+        val trailArray = arrayListOf<Trail>()
+        val trails = db.collection("Trails")
+        val latLongBounds = calculateLatLngBounds(position)
+        trailRecycler = binding.trailRecycler
+        trailRecycler.layoutManager = LinearLayoutManager(requireContext())
+        trails.whereLessThanOrEqualTo("finalLat", latLongBounds.second.latitude)
+            .whereGreaterThanOrEqualTo("finalLat",latLongBounds.first.latitude)
+            .get()
+            .addOnSuccessListener { documents ->
+                if(!documents.isEmpty) {
+                    for (document in documents) {
+                        if (document.get("finalLon").toString()
+                                .toDouble() >= latLongBounds.first.longitude
+                            && document.get("finalLon").toString()
+                                .toDouble() <= latLongBounds.second.longitude
+                        ) {
+                            var name = "unnamed_trail"
+                            if (document.get("name") !== null) {
+                                name = document.get("name")!!.toString()
+                            }
+                            trailArray.add(Trail(document.id,
+                                document.get("distance").toString().toFloat(),
+                                name))
+                        }
+                    }
+                    trailRecycler.adapter = trailAdaptor(trailArray)
                 }else{
                     Toast.makeText(requireContext(), "No Trails found in this location", Toast.LENGTH_SHORT).show()
                 }
@@ -135,6 +161,7 @@ class TrailViewFragment : Fragment() {
             }
     }
 
+    @SuppressLint("InflateParams")
     private fun getLatLngFromStr(){
         val builder = AlertDialog.Builder(requireContext())
         val inflater = layoutInflater
@@ -143,11 +170,11 @@ class TrailViewFragment : Fragment() {
         with(builder){
             setTitle("Enter address to find trails")
             setPositiveButton("Save"){dialog, which ->
-                var address = editText.text.toString()
+                val address = editText.text.toString()
                 if(address.isEmpty()){
                     Toast.makeText(requireContext(), "No input found, try again", Toast.LENGTH_SHORT).show()
                 }else{
-                  val loc = geocoder.getFromLocationName(address,1,)
+                    val loc = geocoder.getFromLocationName(address,1)
                     if (loc != null) {
                         if(loc.isNotEmpty()){
                             val coordinates = LatLng(loc.first().latitude,loc.first().longitude)
@@ -160,52 +187,6 @@ class TrailViewFragment : Fragment() {
             }
             setView(dialogLayout)
             show()
-        }
-
-    }
-
-    private fun getImages(documents:QuerySnapshot){
-        val trailArray = arrayListOf<Trail>()
-        val idList = mutableListOf<String>()
-        trailRecycler = binding.trailRecycler
-        trailRecycler.layoutManager = LinearLayoutManager(requireContext())
-        for (document in documents) {
-            idList.add(document.id)
-        }
-        val images = db.collection("Trail_Images")
-        images.whereIn("id",idList)
-            .get()
-            .addOnSuccessListener { documents1 ->
-                if(!documents1.isEmpty) {
-                    for (document1 in documents1) {
-                        val imgStr = document1.get("img").toString()
-                        for (document in documents) {
-                            if (document.id == document1.id) {
-                                var name = "unnamed_trail"
-                                if (document.get("name") !== null) {
-                                    name = document.get("name")!!.toString()
-                                }
-                                val trail = Trail(
-                                    document1.id,
-                                    document.get("distance").toString().toFloat(),
-                                    imgStr,
-                                    name
-                                )
-                                trailArray.add(trail)
-                                break
-                            }
-                        }
-
-                    }
-
-                    trailRecycler.adapter = trailAdaptor(trailArray)
-                }else{
-                    Toast.makeText(requireContext(), "No Trails found in this location", Toast.LENGTH_SHORT).show()
-                }
-
-            }
-            .addOnFailureListener { exception ->
-            Log.w("Testing", "Error getting documents: ", exception)
         }
 
     }

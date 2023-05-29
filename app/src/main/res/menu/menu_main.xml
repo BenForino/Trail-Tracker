@@ -3,9 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.benforino.trailtrackerv2.MainActivity">
     <item
-        android:id="@+id/action_settings"
-        android:title="@string/action_settings"/>
+        android:id="@+id/action_find_trails"
+        android:title="@string/find_trails"
+        android:icon="@drawable/explore_48px"/>
     <item
-        android:id="@+id/action_account"
-        android:title="@string/account" />
+        android:id="@+id/action_record"
+        android:title="@string/record"
+        android:icon="@drawable/radio_button_checked"/>
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        android:icon="@drawable/settings_48px"/>
 </menu>

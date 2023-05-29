@@ -6,25 +6,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.benforino.trailtrackerv2.databinding.FragmentSecondBinding
+import com.benforino.trailtrackerv2.databinding.FragmentAccountBinding
+import com.benforino.trailtrackerv2.databinding.FragmentMenuBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
-/**
- * A simple [Fragment] subclass as the second destination in the navigation.
- */
-class SecondFragment : Fragment() {
-
-    private var _binding: FragmentSecondBinding? = null
+class AccountFragment : Fragment() {
+    private lateinit var firebaseAuth: FirebaseAuth
+    private var _binding: FragmentAccountBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
+        firebaseAuth = Firebase.auth;
 
-        _binding = FragmentSecondBinding.inflate(inflater, container, false)
+        _binding = FragmentAccountBinding.inflate(inflater, container, false)
         return binding.root
 
     }
@@ -32,10 +34,8 @@ class SecondFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.buttonSecond.setOnClickListener {
-        }
-    }
 
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

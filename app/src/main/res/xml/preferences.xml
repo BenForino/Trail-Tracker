@@ -12,4 +12,8 @@
         app:key="logout"
         app:title="@string/logout_text"
         app:summary="@string/logout_summary"/>
+    <Preference
+        app:key="delete"
+        app:title="Delete Account"
+        app:summary="Delete your account and all data linked to it" />
 </PreferenceScreen>

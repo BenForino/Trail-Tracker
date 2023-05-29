@@ -3,9 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/MenuFragment">
+    app:startDestination="@id/recordFragment">
     <action android:id="@+id/global_record_fragment"
         app:destination="@+id/recordFragment"
+        app:launchSingleTop="true"/>
+    <action android:id="@+id/global_view_fragment"
+        app:destination="@+id/trailViewFragment"
+        app:launchSingleTop="true"/>
+    <action android:id="@+id/global_settings_fragment"
+        app:destination="@+id/settingsFragment"
+        app:launchSingleTop="true"/>
+    <action android:id="@+id/global_account_fragment"
+        app:destination="@+id/accountFragment"
         app:launchSingleTop="true"/>
     <fragment
         android:id="@+id/MenuFragment"
@@ -41,4 +50,9 @@
         android:name="com.benforino.trailtrackerv2.TrailViewFragment"
         android:label="fragment_trail_view"
         tools:layout="@layout/fragment_trail_view" />
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="com.benforino.trailtrackerv2.AccountFragment"
+        android:label="fragment_account"
+        tools:layout="@layout/fragment_account" />
 </navigation>

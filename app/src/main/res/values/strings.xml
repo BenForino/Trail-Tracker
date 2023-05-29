@@ -36,4 +36,6 @@
     <string name="submit">Submit</string>
     <string name="enter_trail_name">Enter Trail Name</string>
     <string name="enter_address">Enter Address</string>
+    <string name="record">Record</string>
+    <string name="find_trails">Find Trails</string>
 </resources>

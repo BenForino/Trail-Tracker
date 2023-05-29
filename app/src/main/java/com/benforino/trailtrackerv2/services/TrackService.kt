@@ -10,8 +10,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.os.Build
 import android.os.Looper
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
@@ -161,7 +163,9 @@ class TrackService: LifecycleService() {
             when(it.action){
                 ACTION_START_OR_RESUME_SERVICE -> {
                     if(firstRun){
-                        createForegroundService()
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            createForegroundService()
+                        }
                         firstRun = false
                     }else{
                         timeRide()
@@ -198,6 +202,7 @@ class TrackService: LifecycleService() {
         },
         FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
     )
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun createForegroundService() {
         timeRide()
         tracking.postValue(true)
@@ -213,6 +218,7 @@ class TrackService: LifecycleService() {
             .setContentIntent(getPendingIntent())
         startForeground(NOTIFICATION_ID, notificationBuilder.build())
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun startNotificationService(notificationManager: NotificationManager){
         val channel = NotificationChannel(
             NOTIFICATION_CHANNEL_ID,
